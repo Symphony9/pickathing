@@ -117,6 +117,10 @@ class Pickathing {
 		this.value = value;
 	}
 
+	onChange() {
+		// silence is golden
+	}
+
 	bindEvents() {
 		let self = this;
 		if (this.hasSearch) {
@@ -158,6 +162,8 @@ class Pickathing {
 				this.selectedField.innerHTML = label;
 				this.element.value = value;
 				this.value = value;
+
+				this.onChange(this.value);
 			}
 
 			if (el.classList.contains('Pickathing-selectedField')) {

@@ -118,6 +118,10 @@ Pickathing.prototype.setOption = function setOption (value) {
 	this.value = value;
 };
 
+Pickathing.prototype.onChange = function onChange () {
+	// silence is golden
+};
+
 Pickathing.prototype.bindEvents = function bindEvents () {
 		var this$1 = this;
 
@@ -161,6 +165,8 @@ Pickathing.prototype.bindEvents = function bindEvents () {
 			this$1.selectedField.innerHTML = label;
 			this$1.element.value = value;
 			this$1.value = value;
+
+			this$1.onChange(this$1.value);
 		}
 
 		if (el.classList.contains('Pickathing-selectedField')) {
