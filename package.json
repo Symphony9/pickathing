@@ -1,0 +1,33 @@
+{
+  "name": "pickathing",
+  "version": "0.1.0",
+  "description": "Simple select written in Vanilla JS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "buble src/pickathing.js > dist/pickathing.js && node-sass src/pickathing.scss dist/pickathing.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Symphony9/pickathing.git"
+  },
+  "keywords": [
+    "select",
+    "selectjs",
+    "vanillajs",
+    "pickathing",
+    "vojtechklos",
+    "symphonyno9",
+    "symphony"
+  ],
+  "author": "Vojtech Klos, Symphony no. 9",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Symphony9/pickathing/issues"
+  },
+  "homepage": "https://github.com/Symphony9/pickathing#readme",
+  "devDependencies": {
+    "buble": "^0.13.2",
+    "node-sass": "^3.9.3"
+  }
+}

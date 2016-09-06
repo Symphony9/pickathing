@@ -1,0 +1,127 @@
+$colorPrimary: #333333;
+$colorPrimary--light: #ccc;
+$colorPrimary--dark: #0a0a0a;
+$colorBg: #ffffff;
+$colorBg--dark: #bbb;
+
+.Pickathing {
+	position: relative;
+	width: 100%;
+
+	* {
+		box-sizing: border-box;
+	}
+
+	+ select {
+		display: none;
+	}
+
+	&-selectedField {
+		height: 35px;
+		border: 1px solid $colorPrimary--light;
+		padding: 5px 30px 5px 8px;
+		position: relative;
+		cursor: pointer;
+		border-radius: 3px;
+		transition: all ease .3s;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display: inline-block;
+		width: 100%;
+		color: $colorPrimary--dark;
+		text-align: left;
+		background-color: transparent;
+
+		
+
+		&:before {
+			content: '';
+			position: absolute;
+			top: 8px;
+			right: 8px;
+			line-height: 35px;
+		}
+
+		&:hover {
+			border: 1px solid $colorPrimary;
+			text-decoration: none;
+			color: $colorPrimary--dark;
+		}
+
+		&:active, &:focus {
+			text-decoration: none;
+			color: $colorPrimary--dark;
+		}
+
+		&:disabled {
+			&:hover {
+				color: $colorPrimary--dark;
+				border: 1px solid $colorPrimary--light;
+				text-decoration: none;
+				cursor: not-allowed;
+			}
+		}
+	}
+
+	&-dropdown {
+		position: absolute;
+		top: 40px;
+		left: 0;
+		width: 100%;
+		border: 1px solid $colorPrimary--dark;
+		border-radius: 3px;
+		padding: 8px;
+		background-color: $colorBg;
+		z-index: 100;
+		visibility: hidden;
+		opacity: 0;
+		transition: all ease .2s;
+	}
+
+	&-searchField {
+		width: 100%;
+		border: 1px solid $colorPrimary--light;
+		padding: 5px 8px;
+		margin-bottom: 8px;
+	}
+
+	&-option {
+		cursor: pointer;
+		padding: 5px 8px;
+		border: none;
+		display: block;
+		width: 100%;
+
+		&:hover {
+			background-color: $colorPrimary--light;
+		}
+
+		&:disabled {
+			cursor: not-allowed;
+			background-color: $colorBg--dark;
+			text-align: left;
+
+			&:hover {
+				background-color: $colorBg--dark;
+			}
+		}
+	}
+
+	&-list {
+		overflow-y: auto;
+		max-height: 0;
+		transition: all ease .2s;
+	}
+}
+
+.Pickathing--open {
+	.Pickathing-dropdown {
+		visibility: visible;
+		opacity: 1;
+	}
+
+	.Pickathing-list {
+		max-height: 400px;
+	}
+}
