@@ -1,4 +1,4 @@
-export default class Pickathing {
+export class Pickathing {
 	constructor(elementId, hasSearch) {
 		this.element = document.getElementById(elementId);
 		this.parentEl = this.element.parentNode;
@@ -6,7 +6,7 @@ export default class Pickathing {
 		this.required = this.element.hasAttribute('data-required');
 
 		this.wrapper = document.createElement('div');
-		this.wrapper.className = 'Select';
+		this.wrapper.className = 'Pickathing';
 		this.wrapper = this.parentEl.insertBefore(this.wrapper, this.element);
 
 		if (this.required) {
@@ -45,26 +45,26 @@ export default class Pickathing {
 		this.selectedField = document.createElement('button');
 		this.selectedField.type = '';
 		this.selectedField.setAttribute('data-client-input', '');
-		this.selectedField.className = 'Select-selectedField';
+		this.selectedField.className = 'Pickathing-selectedField';
 		this.wrapper.appendChild(this.selectedField);
 	}
 
 	addDropdown() {
 		this.dropdown = document.createElement('div');
-		this.dropdown.className = 'Select-dropdown';
+		this.dropdown.className = 'Pickathing-dropdown';
 		this.wrapper.appendChild(this.dropdown);
 	}
 
 	addList() {
 		this.list = document.createElement('div');
-		this.list.className = 'Select-list';
+		this.list.className = 'Pickathing-list';
 		this.dropdown.appendChild(this.list);
 	}
 
 	addSearchField() {
 		this.searchField = document.createElement('input');
 		this.searchField.type = 'text';
-		this.searchField.className = 'Select-searchField';
+		this.searchField.className = 'Pickathing-searchField';
 		this.dropdown.appendChild(this.searchField);
 	}
 
@@ -81,7 +81,7 @@ export default class Pickathing {
 		}
 
 		element.innerHTML = text;
-		element.className = 'Select-option'
+		element.className = 'Pickathing-option'
 		element.setAttribute('data-option', value);
 		element.setAttribute('data-label', text);
 		this.list.appendChild(element);
@@ -144,14 +144,14 @@ export default class Pickathing {
 					}
 				});
 
-				this.wrapper.classList.remove('Select--open');
+				this.wrapper.classList.remove('Pickathing--open');
 			}
 		});
 
 		this.wrapper.addEventListener('click', (e) => {
 			let el = e.target;
-			if (el.classList.contains('Select-option')) {
-				self.wrapper.classList.remove('Select--open');
+			if (el.classList.contains('Pickathing-option')) {
+				self.wrapper.classList.remove('Pickathing--open');
 				let value = el.getAttribute('data-option');
 				let label = el.getAttribute('data-label');
 
@@ -160,9 +160,9 @@ export default class Pickathing {
 				this.value = value;
 			}
 
-			if (el.classList.contains('Select-selectedField')) {
+			if (el.classList.contains('Pickathing-selectedField')) {
 				e.preventDefault();
-				self.wrapper.classList.toggle('Select--open');
+				self.wrapper.classList.toggle('Pickathing--open');
 			}
 		});
 	}
