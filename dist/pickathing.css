@@ -39,6 +39,13 @@
       border: 1px solid #ccc;
       text-decoration: none;
       cursor: not-allowed; }
+  .Pickathing-selectedFlag {
+    display: inline-block;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    background-color: #ccc;
+    padding: 3px 5px;
+    float: left; }
   .Pickathing-dropdown {
     position: absolute;
     top: 40px;
@@ -71,6 +78,8 @@
       text-align: left; }
       .Pickathing-option:disabled:hover {
         background-color: #bbb; }
+  .Pickathing-option--selected {
+    background-color: #e6e6e6; }
   .Pickathing-list {
     overflow-y: auto;
     max-height: 0;
@@ -82,3 +91,10 @@
 
 .Pickathing--open .Pickathing-list {
   max-height: 400px; }
+
+.Pickathing--multiple .Pickathing-selectedField {
+  min-height: 35px;
+  height: auto; }
+
+.Pickathing--multiple .Pickathing-dropdown {
+  top: 100%; }

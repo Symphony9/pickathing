@@ -1,11 +1,13 @@
 {
   "name": "pickathing",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "Simple select written in Vanilla JS",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "buble src/pickathing.js > dist/pickathing.js && node-sass src/pickathing.scss dist/pickathing.css"
+    "build": "buble src/pickathing.js > dist/pickathing.js && node-sass src/pickathing.scss dist/pickathing.css",
+    "sass": "node-sass src/pickathing.scss dist/pickathing.css",
+    "js": "buble src/pickathing.js > dist/pickathing.js"
   },
   "repository": {
     "type": "git",

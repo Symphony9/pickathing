@@ -15,7 +15,15 @@ var Pickathing = function Pickathing(elementId, hasSearch) {
 
 	this.optionElements = [];
 	this.options = this.element.options;
-	this.value = this.element.value;
+
+	this.multiple = this.element.multiple;
+
+	if (this.multiple) {
+		this.wrapper.classList.add('Pickathing--multiple');
+		this.value = {};
+	} else {
+		this.value = this.element.value;
+	}
 
 	this.searchField;
 
@@ -41,7 +49,7 @@ Pickathing.prototype.create = function create () {
 };
 
 Pickathing.prototype.addSelectedField = function addSelectedField () {
-	this.selectedField = document.createElement('button');
+	this.selectedField = document.createElement('div');
 	this.selectedField.type = '';
 	this.selectedField.setAttribute('data-client-input', '');
 	this.selectedField.className = 'Pickathing-selectedField';
@@ -72,7 +80,7 @@ Pickathing.prototype.addOption = function addOption (option) {
 	var text = option.innerHTML;
 	var element;
 
-	if (value == '') {
+	if (value == '' || option.disabled) {
 		element = document.createElement('button');
 		element.disabled = true;
 	} else {
@@ -100,22 +108,31 @@ Pickathing.prototype.checkSelected = function checkSelected () {
 
 	for (var i = 0; i < this.options.length; i++) {
 		if (this$1.options[i].selected) {
-			var label = this$1.optionElements[i].getAttribute('data-label');
+			if (!this$1.multiple) {
+				var label = this$1.optionElements[i].getAttribute('data-label');
+				this$1.optionElements[i].classList.add('Pickathing-option--selected');
+				this$1.selectedField.innerHTML = label;
 
-			this$1.selectedField.innerHTML = label;
-
-			return;
+				return;
+			} else {
+				this$1.setMultiOption(this$1.optionElements[i]);
+				this$1.optionElements[i].disabled = true;
+			}
 		}
 	}
 };
 
-Pickathing.prototype.setOption = function setOption (value) {
-	var option = this.wrapper.querySelectorAll('[data-option="' + value + '"]');
-	var label = option[0].getAttribute('data-label');
+Pickathing.prototype.setMultiOption = function setMultiOption (option) {
+	option.classList.add('Pickathing-option--selected');
+	var label = option.getAttribute('data-label');
+	var value = option.getAttribute('data-option');
+	var selectedFlag = document.createElement('span');
 
-	this.selectedField.innerHTML = label;
-	this.element.value = value;
-	this.value = value;
+	selectedFlag.classList.add('Pickathing-selectedFlag');
+	selectedFlag.setAttribute('data-option', value);
+	selectedFlag.innerHTML = label;
+	this.selectedField.appendChild(selectedFlag);
+	this.value[value] = option;
 };
 
 Pickathing.prototype.onChange = function onChange () {
@@ -145,26 +162,49 @@ Pickathing.prototype.bindEvents = function bindEvents () {
 		var el = e.target;
 
 		if (el != this$1.selectedField && el != this$1.searchField) {
-			this$1.optionElements.map(function (option) {
-				if (el == option) {
-					return;
-				}
-			});
-
-			this$1.wrapper.classList.remove('Pickathing--open');
+			if (el.classList.contains('Pickathing-option') && this$1.multiple) {
+				// do nothing
+			} else {
+				this$1.wrapper.classList.remove('Pickathing--open');
+			}
 		}
 	});
 
 	this.wrapper.addEventListener('click', function (e) {
 		var el = e.target;
 		if (el.classList.contains('Pickathing-option')) {
-			self.wrapper.classList.remove('Pickathing--open');
+
+			if (!this$1.multiple) {
+				self.wrapper.classList.remove('Pickathing--open');
+			}
+
 			var value = el.getAttribute('data-option');
 			var label = el.getAttribute('data-label');
 
-			this$1.selectedField.innerHTML = label;
-			this$1.element.value = value;
-			this$1.value = value;
+			if (!this$1.multiple) {
+				this$1.optionElements.map(function (opt) {
+					opt.classList.remove('Pickathing-option--selected');
+				});
+				el.classList.add('Pickathing-option--selected');
+				this$1.selectedField.innerHTML = label;
+				this$1.element.value = value;
+				this$1.value = value;
+			} else {
+				if (!el.classList.contains('Pickathing-option--selected')) {
+					var selectedFlag = document.createElement('span');
+					selectedFlag.classList.add('Pickathing-selectedFlag');
+					selectedFlag.innerHTML = label;
+					selectedFlag.setAttribute('data-option', value);
+					this$1.value[value] = el;
+					this$1.selectedField.appendChild(selectedFlag);
+					el.classList.add('Pickathing-option--selected');
+				} else {
+					var flagToRemove = this$1.wrapper.querySelectorAll('.Pickathing-selectedFlag[data-option="' + value + '"]');
+					flagToRemove[0].remove();
+					el.classList.remove('Pickathing-option--selected');
+					delete this$1.value[el.getAttribute('data-option')];
+				}
+			}
 
 			this$1.onChange(this$1.value);
 		}
@@ -173,5 +213,20 @@ Pickathing.prototype.bindEvents = function bindEvents () {
 			e.preventDefault();
 			self.wrapper.classList.toggle('Pickathing--open');
 		}
+
+		if (el.classList.contains('Pickathing-selectedFlag')) {
+			e.stopPropagation();
+			if (this$1.wrapper.classList.contains('Pickathing--open')) {
+				var flagToRemove$1 = this$1.wrapper.querySelectorAll('.Pickathing-option--selected[data-option="' + el.getAttribute('data-option') + '"]');
+				flagToRemove$1[0].classList.remove('Pickathing-option--selected');
+				delete this$1.value[el.getAttribute('data-option')];
+				el.remove();
+			} else {
+				this$1.wrapper.classList.add('Pickathing--open');
+			}
+
+			this$1.onChange(this$1.value);
+		}
+
 	});
 };
