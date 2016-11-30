@@ -139,6 +139,28 @@ Pickathing.prototype.onChange = function onChange () {
 	// silence is golden
 };
 
+Pickathing.prototype.setOptionByIndex = function setOptionByIndex (index, fireOnChange) {
+	var value = this.optionElements[index].getAttribute('data-option');
+	var label = this.optionElements[index].getAttribute('data-label');
+
+	this.optionElements.map(function (opt) {
+		opt.classList.remove('Pickathing-option--selected');
+	});
+
+	this.optionElements[index].classList.add('Pickathing-option--selected');
+	this.selectedField.innerHTML = label;
+	this.element.value = value;
+	this.value = value;
+
+	if (typeof fireOnChange == 'undefined' || fireOnChange == true) {
+		this.onChange();
+	}
+};
+
+Pickathing.prototype.reset = function reset (fireOnChange) {
+	this.setOptionByIndex(0, fireOnChange);
+};
+
 Pickathing.prototype.bindEvents = function bindEvents () {
 		var this$1 = this;
 
