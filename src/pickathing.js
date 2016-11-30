@@ -138,6 +138,28 @@ class Pickathing {
 		// silence is golden
 	}
 
+	setOptionByIndex(index, fireOnChange) {
+		let value = this.optionElements[index].getAttribute('data-option');
+		let label = this.optionElements[index].getAttribute('data-label');
+
+		this.optionElements.map((opt) => {
+			opt.classList.remove('Pickathing-option--selected');
+		});
+
+		this.optionElements[index].classList.add('Pickathing-option--selected');
+		this.selectedField.innerHTML = label;
+		this.element.value = value;
+		this.value = value;
+
+		if (typeof fireOnChange == 'undefined' || fireOnChange == true) {
+			this.onChange();
+		}
+	}
+
+	reset(fireOnChange) {
+		this.setOptionByIndex(0, fireOnChange);
+	}
+
 	bindEvents() {
 		let self = this;
 		if (this.hasSearch) {
