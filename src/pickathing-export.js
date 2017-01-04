@@ -1,5 +1,10 @@
 export default class Pickathing {
-	constructor(elementId, hasSearch) {
+	constructor(elementId, hasSearch, options) {
+		if (options) {
+			this.filterAnotherBy = options.filterAttr;
+			this.filterAnother = options.filter;
+		}
+
 		this.element = document.getElementById(elementId);
 		this.parentEl = this.element.parentNode;
 		this.hasSearch = typeof hasSearch === 'undefined' ? true : hasSearch;
@@ -16,6 +21,7 @@ export default class Pickathing {
 
 		this.optionElements = [];
 		this.options = this.element.options;
+		this.selectedOption;
 
 		this.multiple = this.element.multiple;
 
@@ -92,6 +98,14 @@ export default class Pickathing {
 		element.className = 'Pickathing-option'
 		element.setAttribute('data-option', value);
 		element.setAttribute('data-label', text);
+
+		let dataAttributes = [].filter.call(option.attributes, (at) => /^data-/.test(at.name));
+		if (dataAttributes.length > 0) {
+			dataAttributes.map((data) => {
+				element.setAttribute(data.name, data.value);
+			});
+		}
+
 		this.list.appendChild(element);
 		this.optionElements.push(element);
 	}
@@ -111,6 +125,7 @@ export default class Pickathing {
 					let label = this.optionElements[i].getAttribute('data-label');
 					this.optionElements[i].classList.add('Pickathing-option--selected');
 					this.selectedField.innerHTML = label;
+					this.selectedOption = this.optionElements[i];
 
 					return;
 				} else {
@@ -126,7 +141,12 @@ export default class Pickathing {
 		let label = option.getAttribute('data-label');
 		let value = option.getAttribute('data-option');
 		let selectedFlag = document.createElement('span');
-
+		let dataAttributes = [].filter.call(option.attributes, (at) => /^data-/.test(at.name));
+		if (dataAttributes.length > 0) {
+			dataAttributes.map((data) => {
+				selectedFlag.setAttribute(data.name, data.value);
+			});
+		}
 		selectedFlag.classList.add('Pickathing-selectedFlag');
 		selectedFlag.setAttribute('data-option', value);
 		selectedFlag.innerHTML = label;
@@ -150,6 +170,7 @@ export default class Pickathing {
 		this.selectedField.innerHTML = label;
 		this.element.value = value;
 		this.value = value;
+		this.selectedOption = this.optionElements[index];
 
 		if (typeof fireOnChange == 'undefined' || fireOnChange == true) {
 			this.onChange();
@@ -157,7 +178,39 @@ export default class Pickathing {
 	}
 
 	reset(fireOnChange) {
-		this.setOptionByIndex(0, fireOnChange);
+		if (!this.multiple) {
+			this.setOptionByIndex(0, fireOnChange);
+		} else {
+			for (let val in this.value) {
+				this.deselectMultiOption(val);
+			}
+
+			if (fireOnChange) {
+				this.onChange();
+			}
+		}
+	}
+
+	deselectMultiOption(value) {
+		let element = this.wrapper.querySelectorAll('.Pickathing-option[data-option="' + value + '"]');
+		let flagToRemove = this.wrapper.querySelectorAll('.Pickathing-selectedFlag[data-option="' + value + '"]');
+		flagToRemove[0].remove();
+		element[0].classList.remove('Pickathing-option--selected');
+		delete this.value[value];
+	}
+
+	filter(query, field) {
+		this.optionElements.map((el) => {
+			let label = el.getAttribute(field);
+			el.style.display = 'block';
+			if (label && query != null) {
+				if (label.match(query)) {
+					el.style.display = 'block';
+				} else {
+					el.style.display = 'none';
+				}
+			}
+		});
 	}
 
 	bindEvents() {
@@ -165,15 +218,7 @@ export default class Pickathing {
 		if (this.hasSearch) {
 			this.searchField.addEventListener('keyup', (e) => {
 				let query = new RegExp(self.searchField.value, 'gi');
-
-				self.optionElements.map((el) => {
-					let label = el.getAttribute('data-label');
-					if (label.match(query)) {
-						el.style.display = 'block';
-					} else {
-						el.style.display = 'none';
-					}
-				});
+				self.filter(query, 'data-label');
 			});
 		}
 
@@ -205,6 +250,7 @@ export default class Pickathing {
 						opt.classList.remove('Pickathing-option--selected');
 					});
 					el.classList.add('Pickathing-option--selected');
+					this.selectedOption = el;
 					this.selectedField.innerHTML = label;
 					this.element.value = value;
 					this.value = value;
@@ -214,14 +260,29 @@ export default class Pickathing {
 						selectedFlag.classList.add('Pickathing-selectedFlag');
 						selectedFlag.innerHTML = label;
 						selectedFlag.setAttribute('data-option', value);
+						let dataAttributes = [].filter.call(el.attributes, (at) => /^data-/.test(at.name));
+						if (dataAttributes.length > 0) {
+							dataAttributes.map((data) => {
+								selectedFlag.setAttribute(data.name, data.value);
+							});
+						}
 						this.value[value] = el;
 						this.selectedField.appendChild(selectedFlag);
 						el.classList.add('Pickathing-option--selected');
 					} else {
-						let flagToRemove = this.wrapper.querySelectorAll('.Pickathing-selectedFlag[data-option="' + value + '"]');
-						flagToRemove[0].remove();
-						el.classList.remove('Pickathing-option--selected');
-						delete this.value[el.getAttribute('data-option')];
+						deselectMultiOption(value);
+					}
+				}
+
+				if (self.filterAnother) {
+					self.filterAnother.filter(self.selectedOption.getAttribute(self.filterAnotherBy), self.filterAnotherBy);
+					if (!self.filterAnother.multiple
+						&& self.filterAnother.selectedOption.getAttribute(self.filterAnotherBy) != self.selectedOption.getAttribute(self.filterAnotherBy)) {
+						self.filterAnother.reset(true);
+					} 
+
+					if (self.filterAnother.multiple) {
+						self.filterAnother.reset(true);
 					}
 				}
 

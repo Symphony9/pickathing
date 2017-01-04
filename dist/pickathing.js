@@ -1,4 +1,15 @@
-var Pickathing = function Pickathing(elementId, hasSearch) {
+(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(factory());
+}(this, (function () { 'use strict';
+
+var Pickathing = function Pickathing(elementId, hasSearch, options) {
+	if (options) {
+		this.filterAnotherBy = options.filterAttr;
+		this.filterAnother = options.filter;
+	}
+
 	this.element = document.getElementById(elementId);
 	this.parentEl = this.element.parentNode;
 	this.hasSearch = typeof hasSearch === 'undefined' ? true : hasSearch;
@@ -15,6 +26,7 @@ var Pickathing = function Pickathing(elementId, hasSearch) {
 
 	this.optionElements = [];
 	this.options = this.element.options;
+	this.selectedOption;
 
 	this.multiple = this.element.multiple;
 
@@ -91,6 +103,14 @@ Pickathing.prototype.addOption = function addOption (option) {
 	element.className = 'Pickathing-option'
 	element.setAttribute('data-option', value);
 	element.setAttribute('data-label', text);
+
+	var dataAttributes = [].filter.call(option.attributes, function (at) { return /^data-/.test(at.name); });
+	if (dataAttributes.length > 0) {
+		dataAttributes.map(function (data) {
+			element.setAttribute(data.name, data.value);
+		});
+	}
+
 	this.list.appendChild(element);
 	this.optionElements.push(element);
 };
@@ -112,6 +132,7 @@ Pickathing.prototype.checkSelected = function checkSelected () {
 				var label = this$1.optionElements[i].getAttribute('data-label');
 				this$1.optionElements[i].classList.add('Pickathing-option--selected');
 				this$1.selectedField.innerHTML = label;
+				this$1.selectedOption = this$1.optionElements[i];
 
 				return;
 			} else {
@@ -127,7 +148,12 @@ Pickathing.prototype.setMultiOption = function setMultiOption (option) {
 	var label = option.getAttribute('data-label');
 	var value = option.getAttribute('data-option');
 	var selectedFlag = document.createElement('span');
-
+	var dataAttributes = [].filter.call(option.attributes, function (at) { return /^data-/.test(at.name); });
+	if (dataAttributes.length > 0) {
+		dataAttributes.map(function (data) {
+			selectedFlag.setAttribute(data.name, data.value);
+		});
+	}
 	selectedFlag.classList.add('Pickathing-selectedFlag');
 	selectedFlag.setAttribute('data-option', value);
 	selectedFlag.innerHTML = label;
@@ -151,6 +177,7 @@ Pickathing.prototype.setOptionByIndex = function setOptionByIndex (index, fireOn
 	this.selectedField.innerHTML = label;
 	this.element.value = value;
 	this.value = value;
+	this.selectedOption = this.optionElements[index];
 
 	if (typeof fireOnChange == 'undefined' || fireOnChange == true) {
 		this.onChange();
@@ -158,7 +185,41 @@ Pickathing.prototype.setOptionByIndex = function setOptionByIndex (index, fireOn
 };
 
 Pickathing.prototype.reset = function reset (fireOnChange) {
-	this.setOptionByIndex(0, fireOnChange);
+		var this$1 = this;
+
+	if (!this.multiple) {
+		this.setOptionByIndex(0, fireOnChange);
+	} else {
+		for (var val in this.value) {
+			this$1.deselectMultiOption(val);
+		}
+
+		if (fireOnChange) {
+			this.onChange();
+		}
+	}
+};
+
+Pickathing.prototype.deselectMultiOption = function deselectMultiOption (value) {
+	var element = this.wrapper.querySelectorAll('.Pickathing-option[data-option="' + value + '"]');
+	var flagToRemove = this.wrapper.querySelectorAll('.Pickathing-selectedFlag[data-option="' + value + '"]');
+	flagToRemove[0].remove();
+	element[0].classList.remove('Pickathing-option--selected');
+	delete this.value[value];
+};
+
+Pickathing.prototype.filter = function filter (query, field) {
+	this.optionElements.map(function (el) {
+		var label = el.getAttribute(field);
+		el.style.display = 'block';
+		if (label && query != null) {
+			if (label.match(query)) {
+				el.style.display = 'block';
+			} else {
+				el.style.display = 'none';
+			}
+		}
+	});
 };
 
 Pickathing.prototype.bindEvents = function bindEvents () {
@@ -168,15 +229,7 @@ Pickathing.prototype.bindEvents = function bindEvents () {
 	if (this.hasSearch) {
 		this.searchField.addEventListener('keyup', function (e) {
 			var query = new RegExp(self.searchField.value, 'gi');
-
-			self.optionElements.map(function (el) {
-				var label = el.getAttribute('data-label');
-				if (label.match(query)) {
-					el.style.display = 'block';
-				} else {
-					el.style.display = 'none';
-				}
-			});
+			self.filter(query, 'data-label');
 		});
 	}
 
@@ -208,6 +261,7 @@ Pickathing.prototype.bindEvents = function bindEvents () {
 					opt.classList.remove('Pickathing-option--selected');
 				});
 				el.classList.add('Pickathing-option--selected');
+				this$1.selectedOption = el;
 				this$1.selectedField.innerHTML = label;
 				this$1.element.value = value;
 				this$1.value = value;
@@ -217,14 +271,29 @@ Pickathing.prototype.bindEvents = function bindEvents () {
 					selectedFlag.classList.add('Pickathing-selectedFlag');
 					selectedFlag.innerHTML = label;
 					selectedFlag.setAttribute('data-option', value);
+					var dataAttributes = [].filter.call(el.attributes, function (at) { return /^data-/.test(at.name); });
+					if (dataAttributes.length > 0) {
+						dataAttributes.map(function (data) {
+							selectedFlag.setAttribute(data.name, data.value);
+						});
+					}
 					this$1.value[value] = el;
 					this$1.selectedField.appendChild(selectedFlag);
 					el.classList.add('Pickathing-option--selected');
 				} else {
-					var flagToRemove = this$1.wrapper.querySelectorAll('.Pickathing-selectedFlag[data-option="' + value + '"]');
-					flagToRemove[0].remove();
-					el.classList.remove('Pickathing-option--selected');
-					delete this$1.value[el.getAttribute('data-option')];
+					deselectMultiOption(value);
+				}
+			}
+
+			if (self.filterAnother) {
+				self.filterAnother.filter(self.selectedOption.getAttribute(self.filterAnotherBy), self.filterAnotherBy);
+				if (!self.filterAnother.multiple
+					&& self.filterAnother.selectedOption.getAttribute(self.filterAnotherBy) != self.selectedOption.getAttribute(self.filterAnotherBy)) {
+					self.filterAnother.reset(true);
+				} 
+
+				if (self.filterAnother.multiple) {
+					self.filterAnother.reset(true);
 				}
 			}
 
@@ -239,8 +308,8 @@ Pickathing.prototype.bindEvents = function bindEvents () {
 		if (el.classList.contains('Pickathing-selectedFlag')) {
 			e.stopPropagation();
 			if (this$1.wrapper.classList.contains('Pickathing--open')) {
-				var flagToRemove$1 = this$1.wrapper.querySelectorAll('.Pickathing-option--selected[data-option="' + el.getAttribute('data-option') + '"]');
-				flagToRemove$1[0].classList.remove('Pickathing-option--selected');
+				var flagToRemove = this$1.wrapper.querySelectorAll('.Pickathing-option--selected[data-option="' + el.getAttribute('data-option') + '"]');
+				flagToRemove[0].classList.remove('Pickathing-option--selected');
 				delete this$1.value[el.getAttribute('data-option')];
 				el.remove();
 			} else {
@@ -252,3 +321,5 @@ Pickathing.prototype.bindEvents = function bindEvents () {
 
 	});
 };
+
+})));

@@ -41,12 +41,30 @@
 			<option value="9">Option 9</option>
 			<option value="10">Option 10</option>
 		</select>
+		<br></br>
+		Filtered selects
+		<select name="demo-select-filter-2" id="demo-select-filter-2">
+			<option value=" ">Select Universe</option>
+			<option value="1" data-universe="marvel">Marvel</option>
+			<option value="2" data-universe="dc">DC</option>
+		</select>
+		<select name="demo-select-filter-1" id="demo-select-filter-1" multiple>
+			<option value=" ">Select a hero</option>
+			<option value="1" data-universe="dc">Batman</option>
+			<option value="2" data-universe="dc">Superman</option>
+			<option value="3" data-universe="dc">Aquaman</option>
+			<option value="4" data-universe="marvel">Iron Man</option>
+			<option value="5" data-universe="marvel">Spider Man</option>
+			<option value="6" data-universe="marvel">Thor</option>
+		</select>
 	</div>
-	<script src="../dist/pickathing.js"></script>
+	<script src="../src/pickathing.js"></script>
 	<script>
 		var demoSelect = new Pickathing('demo-select', true);
 
 		var demoSelectMultiple = new Pickathing('demo-select-multiple', true);
+		var demoSelectFilter1 = new Pickathing('demo-select-filter-1', false);
+		var demoSelectFilter2 = new Pickathing('demo-select-filter-2', false, {filterAttr: 'data-universe', filter: demoSelectFilter1})
 	</script>
 </body>
 </html>
