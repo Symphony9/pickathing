@@ -98,14 +98,13 @@ class Pickathing {
 	addOption(option) {
 		let value = option.value;
 		let text = option.innerHTML;
-		let element;
+		let element = document.createElement('button');
 
 		if (value == '' || option.disabled) {
-			element = document.createElement('button');
 			element.disabled = true;
-		} else {
-			element = document.createElement('button');
 		}
+
+		element.type = 'button';
 
 		element.innerHTML = text;
 		element.className = 'Pickathing-option'
