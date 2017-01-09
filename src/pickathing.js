@@ -1,8 +1,12 @@
 class Pickathing {
 	constructor(elementId, hasSearch, options) {
+		this.transTimeout;
+		this.transTimeoutDelay = 201;
+
 		if (options) {
 			this.filterAnotherBy = options.filterAttr;
 			this.filterAnother = options.filter;
+			this.transTimeoutDelay = options.focusDelay + 1;
 		}
 
 		this.element = document.getElementById(elementId);
@@ -34,6 +38,12 @@ class Pickathing {
 
 		this.searchField;
 
+		this.focusedOption = -1;
+		if (!this.hasSearch) {
+			this.focusedOption = 0;
+		}
+		this.focusableOptions;
+
 		this.create();
 		this.bindEvents();
 	}
@@ -51,6 +61,8 @@ class Pickathing {
 		for (let i = 0; i < this.options.length; i++) {
 			self.addOption(self.options[i]);
 		}
+
+		this.focusableOptions = this.optionElements;
 
 		this.checkSelected();
 	}
@@ -78,6 +90,7 @@ class Pickathing {
 	addSearchField() {
 		this.searchField = document.createElement('input');
 		this.searchField.type = 'text';
+		this.searchField.placeholder = 'Search...';
 		this.searchField.className = 'Pickathing-searchField';
 		this.dropdown.appendChild(this.searchField);
 	}
@@ -91,7 +104,7 @@ class Pickathing {
 			element = document.createElement('button');
 			element.disabled = true;
 		} else {
-			element = document.createElement('div');
+			element = document.createElement('button');
 		}
 
 		element.innerHTML = text;
@@ -213,6 +226,56 @@ class Pickathing {
 		});
 	}
 
+	focusNextOption() {
+		if (this.optionElements.length > this.focusedOption + 1) {
+			this.focusedOption += 1;
+			this.focusOption();
+		}
+	}
+
+	focusPreviousOption() {
+		if (this.hasSearch) {
+			if (this.focusedOption > -1) {
+				this.focusedOption -= 1;
+				if (this.focusedOption == -1) {
+					this.searchField.focus();
+				} else {
+					this.focusOption();
+				}
+			}
+		} else {
+			if (this.focusedOption > 0) {
+				this.focusedOption -= 1;
+				this.focusOption();
+			}
+		}
+	}
+
+	focusOption() {
+		this.focusableOptions[this.focusedOption].focus();
+	}
+
+	toggleState() {
+		let self = this;
+		self.wrapper.classList.toggle('Pickathing--open');
+		if (this.hasSearch) {
+			this.focusedOption = -1;
+		} else {
+			this.focusedOption = 0;
+		}
+		if (self.hasSearch) {
+			clearTimeout(self.transTimeout);
+			self.transTimeout = setTimeout(() => {
+				self.searchField.focus();
+			}, self.transTimeoutDelay);
+		} else {
+			clearTimeout(self.transTimeout);
+			self.transTimeout = setTimeout(() => {
+				self.focusableOptions[0].focus();
+			}, self.transTimeoutDelay);
+		}
+	}
+
 	bindEvents() {
 		let self = this;
 		if (this.hasSearch) {
@@ -245,6 +308,8 @@ class Pickathing {
 				let value = el.getAttribute('data-option');
 				let label = el.getAttribute('data-label');
 
+				this.focusedOption = this.focusableOptions.indexOf(el);
+
 				if (!this.multiple) {
 					this.optionElements.map((opt) => {
 						opt.classList.remove('Pickathing-option--selected');
@@ -270,7 +335,7 @@ class Pickathing {
 						this.selectedField.appendChild(selectedFlag);
 						el.classList.add('Pickathing-option--selected');
 					} else {
-						deselectMultiOption(value);
+						this.deselectMultiOption(value);
 					}
 				}
 
@@ -291,7 +356,7 @@ class Pickathing {
 
 			if (el.classList.contains('Pickathing-selectedField')) {
 				e.preventDefault();
-				self.wrapper.classList.toggle('Pickathing--open');
+				this.toggleState();
 			}
 
 			if (el.classList.contains('Pickathing-selectedFlag')) {
@@ -309,5 +374,17 @@ class Pickathing {
 			}
 
 		});
+
+		this.wrapper.addEventListener('keyup', (e) => {
+			e.preventDefault();
+			if (e.which == 40) { // down arrow
+				this.focusNextOption();
+			} else if (e.which == 38) { // up arrow
+				e.preventDefault();
+				this.focusPreviousOption();
+			} else if (e.which == 27) {
+				this.toggleState();
+			}
+		})
 	}
 }
