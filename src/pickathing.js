@@ -42,7 +42,7 @@ class Pickathing {
 		if (!this.hasSearch) {
 			this.focusedOption = 0;
 		}
-		this.focusableOptions;
+		this.focusableOptions = [];
 
 		this.create();
 		this.bindEvents();
@@ -62,7 +62,11 @@ class Pickathing {
 			self.addOption(self.options[i]);
 		}
 
-		this.focusableOptions = this.optionElements;
+		this.optionElements.map((el) => {
+			if (!el.disabled && el.offsetParent != null) {
+				this.focusableOptions.push(el);
+			}
+		});
 
 		this.checkSelected();
 	}
@@ -226,7 +230,7 @@ class Pickathing {
 	}
 
 	focusNextOption() {
-		if (this.optionElements.length > this.focusedOption + 1) {
+		if (this.focusableOptions.length > this.focusedOption + 1) {
 			this.focusedOption += 1;
 			this.focusOption();
 		}
