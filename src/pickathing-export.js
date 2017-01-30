@@ -346,11 +346,11 @@ export default class Pickathing {
 					self.filterAnother.filter(self.selectedOption.getAttribute(self.filterAnotherBy), self.filterAnotherBy);
 					if (!self.filterAnother.multiple
 						&& self.filterAnother.selectedOption.getAttribute(self.filterAnotherBy) != self.selectedOption.getAttribute(self.filterAnotherBy)) {
-						self.filterAnother.reset(true);
+						self.filterAnother.reset(false);
 					} 
 
 					if (self.filterAnother.multiple) {
-						self.filterAnother.reset(true);
+						self.filterAnother.reset(false);
 					}
 				}
 

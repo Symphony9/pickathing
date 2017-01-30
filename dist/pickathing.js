@@ -41,13 +41,15 @@ var Pickathing = function Pickathing(elementId, hasSearch, options) {
 	if (!this.hasSearch) {
 		this.focusedOption = 0;
 	}
-	this.focusableOptions;
+	this.focusableOptions = [];
 
 	this.create();
 	this.bindEvents();
 };
 
 Pickathing.prototype.create = function create () {
+		var this$1 = this;
+
 	var self = this;
 
 	this.addSelectedField();
@@ -61,7 +63,11 @@ Pickathing.prototype.create = function create () {
 		self.addOption(self.options[i]);
 	}
 
-	this.focusableOptions = this.optionElements;
+	this.optionElements.map(function (el) {
+		if (!el.disabled && el.offsetParent != null) {
+			this$1.focusableOptions.push(el);
+		}
+	});
 
 	this.checkSelected();
 };
@@ -97,14 +103,13 @@ Pickathing.prototype.addSearchField = function addSearchField () {
 Pickathing.prototype.addOption = function addOption (option) {
 	var value = option.value;
 	var text = option.innerHTML;
-	var element;
+	var element = document.createElement('button');
 
 	if (value == '' || option.disabled) {
-		element = document.createElement('button');
 		element.disabled = true;
-	} else {
-		element = document.createElement('button');
 	}
+
+	element.type = 'button';
 
 	element.innerHTML = text;
 	element.className = 'Pickathing-option'
@@ -230,7 +235,7 @@ Pickathing.prototype.filter = function filter (query, field) {
 };
 
 Pickathing.prototype.focusNextOption = function focusNextOption () {
-	if (this.optionElements.length > this.focusedOption + 1) {
+	if (this.focusableOptions.length > this.focusedOption + 1) {
 		this.focusedOption += 1;
 		this.focusOption();
 	}
@@ -348,11 +353,11 @@ Pickathing.prototype.bindEvents = function bindEvents () {
 				self.filterAnother.filter(self.selectedOption.getAttribute(self.filterAnotherBy), self.filterAnotherBy);
 				if (!self.filterAnother.multiple
 					&& self.filterAnother.selectedOption.getAttribute(self.filterAnotherBy) != self.selectedOption.getAttribute(self.filterAnotherBy)) {
-					self.filterAnother.reset(true);
+					self.filterAnother.reset(false);
 				} 
 
 				if (self.filterAnother.multiple) {
-					self.filterAnother.reset(true);
+					self.filterAnother.reset(false);
 				}
 			}
 
