@@ -1,6 +1,6 @@
 {
   "name": "pickathing",
-  "version": "0.6.5",
+  "version": "0.7.0",
   "description": "Simple select written in Vanilla JS",
   "main": "index.js",
   "scripts": {

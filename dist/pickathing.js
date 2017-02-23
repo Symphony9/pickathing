@@ -51,8 +51,6 @@ var Pickathing = function Pickathing(elementId, hasSearch, options) {
 };
 
 Pickathing.prototype.create = function create () {
-		var this$1 = this;
-
 	var self = this;
 
 	this.addSelectedField();
@@ -66,13 +64,19 @@ Pickathing.prototype.create = function create () {
 		self.addOption(self.options[i]);
 	}
 
+	this.checkFocusable();
+	this.checkSelected();
+};
+
+Pickathing.prototype.checkFocusable = function checkFocusable () {
+		var this$1 = this;
+
+	this.focusableOptions = [];
 	this.optionElements.map(function (el) {
 		if (!el.disabled && el.offsetParent != null) {
 			this$1.focusableOptions.push(el);
 		}
 	});
-
-	this.checkSelected();
 };
 
 Pickathing.prototype.addSelectedField = function addSelectedField () {
@@ -127,6 +131,7 @@ Pickathing.prototype.addOption = function addOption (option) {
 		});
 	}
 
+	element.setAttribute('tabindex', '-1');
 	this.list.appendChild(element);
 	this.optionElements.push(element);
 };
@@ -214,6 +219,8 @@ Pickathing.prototype.reset = function reset (fireOnChange) {
 			this.onChange();
 		}
 	}
+
+	this.checkFocusable();
 };
 
 Pickathing.prototype.deselectMultiOption = function deselectMultiOption (value) {
@@ -236,6 +243,8 @@ Pickathing.prototype.filter = function filter (query, field) {
 			}
 		}
 	});
+
+	this.checkFocusable();
 };
 
 Pickathing.prototype.focusNextOption = function focusNextOption () {
@@ -296,6 +305,7 @@ Pickathing.prototype.bindEvents = function bindEvents () {
 		this.searchField.addEventListener('keyup', function (e) {
 			var query = new RegExp(self.searchField.value, 'gi');
 			self.filter(query, 'data-label');
+			this$1.checkFocusable();
 		});
 	}
 
@@ -391,6 +401,7 @@ Pickathing.prototype.bindEvents = function bindEvents () {
 
 	this.wrapper.addEventListener('keyup', function (e) {
 		e.preventDefault();
+		e.stopPropagation();
 		if (e.which == 40) { // down arrow
 			this$1.focusNextOption();
 		} else if (e.which == 38) { // up arrow
@@ -398,6 +409,18 @@ Pickathing.prototype.bindEvents = function bindEvents () {
 			this$1.focusPreviousOption();
 		} else if (e.which == 27) {
 			this$1.toggleState();
+		}
+	})
+
+	this.wrapper.addEventListener('keypress', function (e) {
+		if (e.which == 40 || e.which == 38) {
+			e.preventDefault();
+		}
+	})
+
+	this.wrapper.addEventListener('keydown', function (e) {
+		if (e.which == 40 || e.which == 38) {
+			e.preventDefault();
 		}
 	})
 };

@@ -65,13 +65,17 @@ class Pickathing {
 			self.addOption(self.options[i]);
 		}
 
+		this.checkFocusable();
+		this.checkSelected();
+	}
+
+	checkFocusable() {
+		this.focusableOptions = [];
 		this.optionElements.map((el) => {
 			if (!el.disabled && el.offsetParent != null) {
 				this.focusableOptions.push(el);
 			}
 		});
-
-		this.checkSelected();
 	}
 
 	addSelectedField() {
@@ -126,6 +130,7 @@ class Pickathing {
 			});
 		}
 
+		element.setAttribute('tabindex', '-1');
 		this.list.appendChild(element);
 		this.optionElements.push(element);
 	}
@@ -209,6 +214,8 @@ class Pickathing {
 				this.onChange();
 			}
 		}
+
+		this.checkFocusable();
 	}
 
 	deselectMultiOption(value) {
@@ -231,6 +238,8 @@ class Pickathing {
 				}
 			}
 		});
+
+		this.checkFocusable();
 	}
 
 	focusNextOption() {
@@ -289,6 +298,7 @@ class Pickathing {
 			this.searchField.addEventListener('keyup', (e) => {
 				let query = new RegExp(self.searchField.value, 'gi');
 				self.filter(query, 'data-label');
+				this.checkFocusable();
 			});
 		}
 
@@ -384,6 +394,7 @@ class Pickathing {
 
 		this.wrapper.addEventListener('keyup', (e) => {
 			e.preventDefault();
+			e.stopPropagation();
 			if (e.which == 40) { // down arrow
 				this.focusNextOption();
 			} else if (e.which == 38) { // up arrow
@@ -391,6 +402,18 @@ class Pickathing {
 				this.focusPreviousOption();
 			} else if (e.which == 27) {
 				this.toggleState();
+			}
+		})
+
+		this.wrapper.addEventListener('keypress', (e) => {
+			if (e.which == 40 || e.which == 38) {
+				e.preventDefault();
+			}
+		})
+
+		this.wrapper.addEventListener('keydown', (e) => {
+			if (e.which == 40 || e.which == 38) {
+				e.preventDefault();
 			}
 		})
 	}
