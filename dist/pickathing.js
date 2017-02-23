@@ -2,10 +2,13 @@ var Pickathing = function Pickathing(elementId, hasSearch, options) {
 	this.transTimeout;
 	this.transTimeoutDelay = 201;
 
+	this.searchFieldText = 'Search';
+
 	if (options) {
 		this.filterAnotherBy = options.filterAttr;
 		this.filterAnother = options.filter;
 		this.transTimeoutDelay = options.focusDelay + 1;
+		this.searchFieldText = options.searchLabel;
 	}
 
 	this.element = document.getElementById(elementId);
@@ -95,7 +98,7 @@ Pickathing.prototype.addList = function addList () {
 Pickathing.prototype.addSearchField = function addSearchField () {
 	this.searchField = document.createElement('input');
 	this.searchField.type = 'text';
-	this.searchField.placeholder = 'Search...';
+	this.searchField.placeholder = this.searchFieldText;
 	this.searchField.className = 'Pickathing-searchField';
 	this.dropdown.appendChild(this.searchField);
 };
