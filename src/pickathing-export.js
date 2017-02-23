@@ -79,6 +79,7 @@ export default class Pickathing {
 		this.selectedField.type = '';
 		this.selectedField.setAttribute('data-client-input', '');
 		this.selectedField.className = 'Pickathing-selectedField';
+		this.selectedField.setAttribute('tabindex', '0');
 		this.wrapper.appendChild(this.selectedField);
 	}
 
