@@ -45,7 +45,6 @@ export default class Pickathing {
 		if (!this.hasSearch) {
 			this.focusedOption = 0;
 		}
-
 		this.focusableOptions = [];
 
 		this.create();
@@ -156,7 +155,6 @@ export default class Pickathing {
 					return;
 				} else {
 					this.setMultiOption(this.optionElements[i]);
-					this.optionElements[i].disabled = true;
 				}
 			}
 		}
@@ -215,12 +213,15 @@ export default class Pickathing {
 				this.onChange();
 			}
 		}
+
 		this.checkFocusable();
 	}
 
 	deselectMultiOption(value) {
 		let element = this.wrapper.querySelectorAll('.Pickathing-option[data-option="' + value + '"]');
 		let flagToRemove = this.wrapper.querySelectorAll('.Pickathing-selectedFlag[data-option="' + value + '"]');
+		let originalOption = this.element.querySelectorAll('option[value="' + value + '"]')[0];
+		originalOption.selected = false;
 		flagToRemove[0].remove();
 		element[0].classList.remove('Pickathing-option--selected');
 		delete this.value[value];
@@ -320,7 +321,6 @@ export default class Pickathing {
 
 				if (!this.multiple) {
 					self.wrapper.classList.remove('Pickathing--open');
-					self.selectedField.focus();
 				}
 
 				let value = el.getAttribute('data-option');
@@ -349,6 +349,8 @@ export default class Pickathing {
 								selectedFlag.setAttribute(data.name, data.value);
 							});
 						}
+						let originalOption = this.element.querySelectorAll('option[value="' + value + '"]')[0];
+						originalOption.selected = true;
 						this.value[value] = el;
 						this.selectedField.appendChild(selectedFlag);
 						el.classList.add('Pickathing-option--selected');
@@ -395,6 +397,7 @@ export default class Pickathing {
 
 		this.wrapper.addEventListener('keyup', (e) => {
 			e.preventDefault();
+			e.stopPropagation();
 			if (e.which == 40) { // down arrow
 				this.focusNextOption();
 			} else if (e.which == 38) { // up arrow

@@ -155,7 +155,6 @@ class Pickathing {
 					return;
 				} else {
 					this.setMultiOption(this.optionElements[i]);
-					this.optionElements[i].disabled = true;
 				}
 			}
 		}
@@ -221,6 +220,8 @@ class Pickathing {
 	deselectMultiOption(value) {
 		let element = this.wrapper.querySelectorAll('.Pickathing-option[data-option="' + value + '"]');
 		let flagToRemove = this.wrapper.querySelectorAll('.Pickathing-selectedFlag[data-option="' + value + '"]');
+		let originalOption = this.element.querySelectorAll('option[value="' + value + '"]')[0];
+		originalOption.selected = false;
 		flagToRemove[0].remove();
 		element[0].classList.remove('Pickathing-option--selected');
 		delete this.value[value];
@@ -348,6 +349,8 @@ class Pickathing {
 								selectedFlag.setAttribute(data.name, data.value);
 							});
 						}
+						let originalOption = this.element.querySelectorAll('option[value="' + value + '"]')[0];
+						originalOption.selected = true;
 						this.value[value] = el;
 						this.selectedField.appendChild(selectedFlag);
 						el.classList.add('Pickathing-option--selected');
