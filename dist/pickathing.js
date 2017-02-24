@@ -344,6 +344,13 @@ Pickathing.prototype.bindEvents = function bindEvents () {
 				this$1.selectedField.innerHTML = label;
 				this$1.element.value = value;
 				this$1.value = value;
+
+				for (var i = 0, l = this$1.options.length; i < l; i++) {
+					this$1.options[i].selected = false;
+				}
+
+				var originalOption = this$1.element.querySelectorAll('option[value="' + value + '"]')[0];
+				originalOption.selected = true;
 			} else {
 				if (!el.classList.contains('Pickathing-option--selected')) {
 					var selectedFlag = document.createElement('span');
@@ -356,8 +363,8 @@ Pickathing.prototype.bindEvents = function bindEvents () {
 							selectedFlag.setAttribute(data.name, data.value);
 						});
 					}
-					var originalOption = this$1.element.querySelectorAll('option[value="' + value + '"]')[0];
-					originalOption.selected = true;
+					var originalOption$1 = this$1.element.querySelectorAll('option[value="' + value + '"]')[0];
+					originalOption$1.selected = true;
 					this$1.value[value] = el;
 					this$1.selectedField.appendChild(selectedFlag);
 					el.classList.add('Pickathing-option--selected');

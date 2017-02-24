@@ -337,6 +337,13 @@ class Pickathing {
 					this.selectedField.innerHTML = label;
 					this.element.value = value;
 					this.value = value;
+
+					for (let i = 0, l = this.options.length; i < l; i++) {
+						this.options[i].selected = false;
+					}
+
+					let originalOption = this.element.querySelectorAll('option[value="' + value + '"]')[0];
+					originalOption.selected = true;
 				} else {
 					if (!el.classList.contains('Pickathing-option--selected')) {
 						let selectedFlag = document.createElement('span');
