@@ -43,3 +43,29 @@ The select needs to be instance of Pickathing class.
 
 ##### options.focusDelay
 (Number) Sets delay after the search field or the first item is selected. Should match transition of opening the dropdown. If you did not change transition in CSS you do not have to change this value
+
+### Methods
+
+#### Pickathing.reset(fireOnChange)
+Resets the filter to initial state. Accepts `fireOnChange` (true or false) to trigger the onChange method or not
+
+#### Pickathing.onChange()
+You can fire the onChange event manually with this method, or you can set what function should be executed
+```javascript
+let select = new Pickathing(...);
+select.onChange = () => {
+  ...
+}
+```
+By default this method is blank and does not do anything.
+
+### Events
+
+#### Pickathing.onChange
+By default it is blank and serves as a method as well. Fire after the select has changed its value (e.g. clicking on option). Has to be set after initialization:
+```javascript
+let select = new Pickathing(...);
+select.onChange = () => {
+  ...
+}
+```
