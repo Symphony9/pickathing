@@ -16,3 +16,30 @@ There is an option to filter one select by the other. To do that simply add opti
 `new Pickathing('your-id', true/false, {filterAttr: 'data-filter', filter: select})`
 
 The select needs to be instance of Pickathing class.
+
+## More docs:
+
+`new Pickathing('element-id', hasSearch, options)`
+
+### Parameters
+
+#### element-id
+(String) Id of the select you want to activate
+
+#### hasSearch
+(Boolean) true/false determines if the searchfield is added or not
+
+#### options __(optional)__
+(Object) key: value pairs of other options
+
+##### options.filter
+(Instance) Instance of already initialized Pickathing select which gets filtered BY this select
+
+##### options.filterAttr
+(String) Attribute for which to look when filtering another select __(Has to be present if you use options.filter)__
+
+##### options.searchLabel
+(String) Sets the placeholder in the search field
+
+##### options.focusDelay
+(Number) Sets delay after the search field or the first item is selected. Should match transition of opening the dropdown. If you did not change transition in CSS you do not have to change this value
