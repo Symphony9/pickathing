@@ -80,11 +80,12 @@ Pickathing.prototype.checkFocusable = function checkFocusable () {
 };
 
 Pickathing.prototype.addSelectedField = function addSelectedField () {
+	var tabindex = this.element.getAttribute('tabindex');
 	this.selectedField = document.createElement('div');
 	this.selectedField.type = '';
 	this.selectedField.setAttribute('data-client-input', '');
 	this.selectedField.className = 'Pickathing-selectedField';
-	this.selectedField.setAttribute('tabindex', '0');
+	this.selectedField.setAttribute('tabindex', tabindex);
 	this.wrapper.appendChild(this.selectedField);
 };
 
