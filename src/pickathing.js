@@ -79,11 +79,17 @@ class Pickathing {
 	}
 
 	addSelectedField() {
+		let tabindex = this.element.getAttribute('tabindex');
+
+		if (tabindex == null) {
+			tabindex = 0;
+		}
+
 		this.selectedField = document.createElement('div');
 		this.selectedField.type = '';
 		this.selectedField.setAttribute('data-client-input', '');
 		this.selectedField.className = 'Pickathing-selectedField';
-		this.selectedField.setAttribute('tabindex', '0');
+		this.selectedField.setAttribute('tabindex', tabindex);
 		this.wrapper.appendChild(this.selectedField);
 	}
 
