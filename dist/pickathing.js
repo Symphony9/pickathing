@@ -81,6 +81,11 @@ Pickathing.prototype.checkFocusable = function checkFocusable () {
 
 Pickathing.prototype.addSelectedField = function addSelectedField () {
 	var tabindex = this.element.getAttribute('tabindex');
+
+	if (tabindex == null) {
+		tabindex = 0;
+	}
+
 	this.selectedField = document.createElement('div');
 	this.selectedField.type = '';
 	this.selectedField.setAttribute('data-client-input', '');

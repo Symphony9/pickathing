@@ -79,11 +79,17 @@ export default class Pickathing {
 	}
 
 	addSelectedField() {
+		let tabindex = this.element.getAttribute('tabindex');
+
+		if (tabindex == null) {
+			tabindex = 0;
+		}
+
 		this.selectedField = document.createElement('div');
 		this.selectedField.type = '';
 		this.selectedField.setAttribute('data-client-input', '');
 		this.selectedField.className = 'Pickathing-selectedField';
-		this.selectedField.setAttribute('tabindex', '0');
+		this.selectedField.setAttribute('tabindex', tabindex);
 		this.wrapper.appendChild(this.selectedField);
 	}
 
@@ -337,6 +343,13 @@ export default class Pickathing {
 					this.selectedField.innerHTML = label;
 					this.element.value = value;
 					this.value = value;
+
+					for (let i = 0, l = this.options.length; i < l; i++) {
+						this.options[i].selected = false;
+					}
+
+					let originalOption = this.element.querySelectorAll('option[value="' + value + '"]')[0];
+					originalOption.selected = true;
 				} else {
 					if (!el.classList.contains('Pickathing-option--selected')) {
 						let selectedFlag = document.createElement('span');
