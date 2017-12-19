@@ -52,8 +52,6 @@ class Pickathing {
 	}
 
 	create() {
-		let self = this;
-
 		this.addSelectedField();
 		this.addDropdown();
 		if (this.hasSearch) {
@@ -62,7 +60,7 @@ class Pickathing {
 		this.addList();
 
 		for (let i = 0; i < this.options.length; i++) {
-			self.addOption(self.options[i]);
+			this.addOption(this.options[i]);
 		}
 
 		this.checkFocusable();
