@@ -1,6 +1,8 @@
 # Pickathing
 Simple select written in Vanilla JS
 
+[Examples](docs/examples.html)
+
 Just do `var select = new Pickathing('your-id', true/false)`
 
 true /false is for the searchfield to show or not.
