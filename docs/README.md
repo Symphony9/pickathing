@@ -1,7 +1,7 @@
 # Pickathing
 Simple select written in Vanilla JS
 
-[Examples](docs/examples.html)
+[Examples](examples.html)
 
 Just do `var select = new Pickathing('your-id', true/false)`
 
