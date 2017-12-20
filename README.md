@@ -44,6 +44,9 @@ The select needs to be instance of Pickathing class.
 ##### options.focusDelay
 (Number) Sets delay after the search field or the first item is selected. Should match transition of opening the dropdown. If you did not change transition in CSS you do not have to change this value
 
+#### options.ignoreDiacritics
+(Boolean) true/false determines if the searchfield ignores diacritics or not
+
 ### Methods
 
 #### Pickathing.reset(fireOnChange)
