@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Pickathing</title>
+
+	<link rel="stylesheet" href="../dist/pickathing.css">
+
+	<style>
+		.container {
+			width: 300px;
+		}
+	</style>
+</head>
+<body>
+	<h1>Pickathing functionality preview</h1>
+	<div class="container">
+		Classic select
+		<select name="demo-select" id="demo-select">
+			<option value="1">Option 1</option>
+			<option value="2">Option 2</option>
+			<option value="3">Option 3</option>
+			<option value="4" selected>Option 4</option>
+			<option value="5">Option 5</option>
+			<option value="6">Option 6</option>
+			<option value="7" disabled>Option 7</option>
+			<option value="8">Option 8</option>
+			<option value="9">Option 9</option>
+			<option value="10">Option 10</option>
+		</select>
+		<br></br>
+		Classic select that ignores diacritics in search
+		<select name="demo-select" id="demo-select-ignore-diacritics">
+			<option value="1">Option 1</option>
+			<option value="2">Option 2</option>
+			<option value="3">Option 3</option>
+			<option value="4" selected>Option 4</option>
+			<option value="5">Option 5</option>
+			<option value="6">Option 6</option>	
+			<option value="7" disabled>Option 7</option>
+			<option value="8">Option 8</option>
+			<option value="9">Option 9</option>
+			<option value="10">Option 10</option>
+		</select>
+		Multiple select
+		<select name="demo-select-multiple" tabindex="2" id="demo-select-multiple" multiple>
+			<option value="ahoj" selected>Option 1</option>
+			<option value="cusik" selected>Option 2</option>
+			<option value="3">Option 3</option>
+			<option value="4" selected>Option 4</option>
+			<option value="5">Option 5</option>
+			<option value="6">Option 6</option>
+			<option value="7" disabled>Option 7</option>
+			<option value="8">Option 8</option>
+			<option value="9">Option 9</option>
+			<option value="10">Option 10</option>
+		</select>
+		<br></br>
+		Filtered selects
+		<select name="demo-select-filter-2" tabindex="3" id="demo-select-filter-2">
+			<option value=" ">Select Universe</option>
+			<option value="1" data-universe="marvel">Marvel</option>
+			<option value="2" data-universe="dc">DC</option>
+		</select>
+		<select name="demo-select-filter-1" tabindex="4" id="demo-select-filter-1" multiple>
+			<option value=" ">Select a hero</option>
+			<option value="1" data-universe="dc">Batman</option>
+			<option value="2" data-universe="dc">Superman</option>
+			<option value="3" data-universe="dc">Aquaman</option>
+			<option value="4" data-universe="marvel">Iron Man</option>
+			<option value="5" data-universe="marvel">Spider Man</option>
+			<option value="6" data-universe="marvel">Thor</option>
+		</select>
+	</div>
+	<div class="container">
+		<form action="" method="POST">
+			<hr>
+			<p>
+				This is a form test!
+			</p>
+			<select name="demo-select-multiple-form" tabindex="5" id="demo-select-multiple-form" multiple>
+				<option value="ahoj" selected>Option 1</option>
+				<option value="cusik">Option 2</option>
+				<option value="3">Option 3</option>
+				<option value="4">Option 4</option>
+				<option value="5">Option 5</option>
+				<option value="6">Option 6</option>
+				<option value="7">Option 7</option>
+				<option value="8">Option 8</option>
+				<option value="9">Option 9</option>
+				<option value="10">Option 10</option>
+			</select>
+			<button type="submit">Submit</button>
+		</form>
+	</div>
+	<script src="../src/pickathing.js"></script>
+	<script>
+		var demoSelect = new Pickathing('demo-select', true, {searchLabel: 'Search for options...'});
+		var demoSelect2 = new Pickathing('demo-select-ignore-diacritics', true, {searchLabel: 'Search for options...', ignoreDiacritics: true});
+
+		var demoSelectMultiple = new Pickathing('demo-select-multiple', true);
+		var demoSelectFilter1 = new Pickathing('demo-select-filter-1', false);
+		var demoSelectFilter2 = new Pickathing('demo-select-filter-2', false, {filterAttr: 'data-universe', filter: demoSelectFilter1});
+		var demoSelectMultipleForm = new Pickathing('demo-select-multiple-form', false);
+	</script>
+</body>
+</html>
