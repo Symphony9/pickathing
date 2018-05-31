@@ -2,7 +2,7 @@ class Pickathing {
 		/**
 		 * @param elementId passed element from DOM
 		 * @param hasSearch bool if there is input field for filter
-		 * @param options {searchLabel: "string"} 
+		 * @param options {searchLabel: "string"}
 		 */
 	constructor(elementId, hasSearch, options) {
 		this.transTimeout;
@@ -25,7 +25,7 @@ class Pickathing {
 		// Checks if hasSearch got true or false
 		this.hasSearch = typeof hasSearch === 'undefined' ? true : hasSearch;
 		this.required = this.element.hasAttribute('data-required');
-		// Creates element and  
+		// Creates element and
 		this.wrapper = document.createElement('div');
 		this.wrapper.className = 'Pickathing';
 		this.wrapper = this.parentEl.insertBefore(this.wrapper, this.element);
@@ -57,7 +57,7 @@ class Pickathing {
 			this.focusedOption = 0;
 		}
 		this.focusableOptions = [];
-		
+
 		this.characters = {
 			'Á': 'A',
 			'Ă': 'A',
@@ -994,7 +994,7 @@ class Pickathing {
 		this.selectedField.setAttribute('tabindex', tabindex);
 		this.wrapper.appendChild(this.selectedField);
 	}
-	
+
 	addDropdown() {
 		this.dropdown = document.createElement('div');
 		this.dropdown.className = 'Pickathing-dropdown';
@@ -1092,6 +1092,17 @@ class Pickathing {
 		this.value[value] = option;
 	}
 
+	triggerNativeChange() {
+		console.log('"Pickathing.onChange" method is deprecated and will be removed in future releases. Please consider using native onchange event');
+		if ("createEvent" in document) {
+		    const evt = document.createEvent("HTMLEvents");
+		    evt.initEvent("change", false, true);
+		    this.element.dispatchEvent(evt);
+		} else {
+		    this.element.fireEvent("onchange");
+		}
+	}
+
 	onChange() {
 		// silence is golden
 	}
@@ -1112,6 +1123,7 @@ class Pickathing {
 
 		if (typeof fireOnChange == 'undefined' || fireOnChange == true) {
 			this.onChange();
+			triggerNativeChange();
 		}
 	}
 
@@ -1125,6 +1137,7 @@ class Pickathing {
 
 			if (fireOnChange) {
 				this.onChange();
+				triggerNativeChange();
 			}
 		}
 
@@ -1206,15 +1219,14 @@ class Pickathing {
 			}, self.transTimeoutDelay);
 		}
 	}
-	// TODO - možnost vyhledávat bez diakritiky
 
 	latinize(toLatinize = '') {
 		let woDiacritics = '';
 		for (let i = 0; i < toLatinize.length; i++) {
 			woDiacritics += this.characters[toLatinize[i]] ? this.characters[toLatinize[i]] : toLatinize[i];
 		}
-		
-		return woDiacritics;	
+
+		return woDiacritics;
 	}
 
 	bindEvents() {
@@ -1299,7 +1311,7 @@ class Pickathing {
 					if (!self.filterAnother.multiple
 						&& self.filterAnother.selectedOption.getAttribute(self.filterAnotherBy) != self.selectedOption.getAttribute(self.filterAnotherBy)) {
 						self.filterAnother.reset(false);
-					} 
+					}
 
 					if (self.filterAnother.multiple) {
 						self.filterAnother.reset(false);
@@ -1307,6 +1319,7 @@ class Pickathing {
 				}
 
 				this.onChange(this.value);
+				triggerNativeChange();
 			}
 
 			if (el.classList.contains('Pickathing-selectedField')) {
@@ -1326,6 +1339,7 @@ class Pickathing {
 				}
 
 				this.onChange(this.value);
+				triggerNativeChange();
 			}
 
 		});
