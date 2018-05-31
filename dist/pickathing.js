@@ -1,3 +1,9 @@
+(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(factory());
+}(this, (function () { 'use strict';
+
 var Pickathing = function Pickathing(elementId, hasSearch, options) {
 	this.transTimeout;
 	this.transTimeoutDelay = 201;
@@ -19,7 +25,7 @@ var Pickathing = function Pickathing(elementId, hasSearch, options) {
 	// Checks if hasSearch got true or false
 	this.hasSearch = typeof hasSearch === 'undefined' ? true : hasSearch;
 	this.required = this.element.hasAttribute('data-required');
-	// Creates element and  
+	// Creates element and
 	this.wrapper = document.createElement('div');
 	this.wrapper.className = 'Pickathing';
 	this.wrapper = this.parentEl.insertBefore(this.wrapper, this.element);
@@ -51,7 +57,7 @@ var Pickathing = function Pickathing(elementId, hasSearch, options) {
 		this.focusedOption = 0;
 	}
 	this.focusableOptions = [];
-		
+
 	this.characters = {
 		'Á': 'A',
 		'Ă': 'A',
@@ -992,7 +998,7 @@ Pickathing.prototype.addSelectedField = function addSelectedField () {
 	this.selectedField.setAttribute('tabindex', tabindex);
 	this.wrapper.appendChild(this.selectedField);
 };
-	
+
 Pickathing.prototype.addDropdown = function addDropdown () {
 	this.dropdown = document.createElement('div');
 	this.dropdown.className = 'Pickathing-dropdown';
@@ -1027,7 +1033,7 @@ Pickathing.prototype.addOption = function addOption (option) {
 	element.type = 'button';
 
 	element.innerHTML = text;
-	element.className = 'Pickathing-option'
+	element.className = 'Pickathing-option';
 	element.setAttribute('data-option', value);
 	element.setAttribute('data-label', text);
 
@@ -1092,6 +1098,17 @@ Pickathing.prototype.setMultiOption = function setMultiOption (option) {
 	this.value[value] = option;
 };
 
+Pickathing.prototype.triggerNativeChange = function triggerNativeChange () {
+	console.log('"Pickathing.onChange" method is deprecated and will be removed in future releases. Please consider using native onchange event');
+	if ("createEvent" in document) {
+		    var evt = document.createEvent("HTMLEvents");
+		    evt.initEvent("change", false, true);
+		    this.element.dispatchEvent(evt);
+	} else {
+		    this.element.fireEvent("onchange");
+	}
+};
+
 Pickathing.prototype.onChange = function onChange () {
 	// silence is golden
 };
@@ -1112,6 +1129,7 @@ Pickathing.prototype.setOptionByIndex = function setOptionByIndex (index, fireOn
 
 	if (typeof fireOnChange == 'undefined' || fireOnChange == true) {
 		this.onChange();
+		triggerNativeChange();
 	}
 };
 
@@ -1121,12 +1139,13 @@ Pickathing.prototype.reset = function reset (fireOnChange) {
 	if (!this.multiple) {
 		this.setOptionByIndex(0, fireOnChange);
 	} else {
-		for (var val in this.value) {
+		for (var val in this$1.value) {
 			this$1.deselectMultiOption(val);
 		}
 
 		if (fireOnChange) {
 			this.onChange();
+			triggerNativeChange();
 		}
 	}
 
@@ -1208,19 +1227,17 @@ Pickathing.prototype.toggleState = function toggleState () {
 		}, self.transTimeoutDelay);
 	}
 };
-// TODO - možnost vyhledávat bez diakritiky
 
 Pickathing.prototype.latinize = function latinize (toLatinize) {
 		var this$1 = this;
 		if ( toLatinize === void 0 ) toLatinize = '';
 
 	var woDiacritics = '';
-
 	for (var i = 0; i < toLatinize.length; i++) {
 		woDiacritics += this$1.characters[toLatinize[i]] ? this$1.characters[toLatinize[i]] : toLatinize[i];
 	}
-		
-	return woDiacritics;	
+
+	return woDiacritics;
 };
 
 Pickathing.prototype.bindEvents = function bindEvents () {
@@ -1232,6 +1249,7 @@ Pickathing.prototype.bindEvents = function bindEvents () {
 			if (this$1.ignoreDiacritics) {
 				searchQuery = this$1.latinize(searchQuery);
 			}
+
 			var query = new RegExp(searchQuery, 'gi');
 			this$1.filter(query, 'data-label');
 			this$1.checkFocusable();
@@ -1306,7 +1324,7 @@ Pickathing.prototype.bindEvents = function bindEvents () {
 				if (!self.filterAnother.multiple
 					&& self.filterAnother.selectedOption.getAttribute(self.filterAnotherBy) != self.selectedOption.getAttribute(self.filterAnotherBy)) {
 					self.filterAnother.reset(false);
-				} 
+				}
 
 				if (self.filterAnother.multiple) {
 					self.filterAnother.reset(false);
@@ -1314,6 +1332,7 @@ Pickathing.prototype.bindEvents = function bindEvents () {
 			}
 
 			this$1.onChange(this$1.value);
+			triggerNativeChange();
 		}
 
 		if (el.classList.contains('Pickathing-selectedField')) {
@@ -1333,6 +1352,7 @@ Pickathing.prototype.bindEvents = function bindEvents () {
 			}
 
 			this$1.onChange(this$1.value);
+			triggerNativeChange();
 		}
 
 	});
@@ -1348,17 +1368,19 @@ Pickathing.prototype.bindEvents = function bindEvents () {
 		} else if (e.which == 27) {
 			this$1.toggleState();
 		}
-	})
+	});
 
 	this.wrapper.addEventListener('keypress', function (e) {
 		if (e.which == 40 || e.which == 38) {
 			e.preventDefault();
 		}
-	})
+	});
 
 	this.wrapper.addEventListener('keydown', function (e) {
 		if (e.which == 40 || e.which == 38) {
 			e.preventDefault();
 		}
-	})
+	});
 };
+
+})));
