@@ -1123,7 +1123,7 @@ class Pickathing {
 
 		if (typeof fireOnChange == 'undefined' || fireOnChange == true) {
 			this.onChange();
-			triggerNativeChange();
+			this.triggerNativeChange();
 		}
 	}
 
@@ -1137,7 +1137,7 @@ class Pickathing {
 
 			if (fireOnChange) {
 				this.onChange();
-				triggerNativeChange();
+				this.triggerNativeChange();
 			}
 		}
 
@@ -1319,7 +1319,7 @@ class Pickathing {
 				}
 
 				this.onChange(this.value);
-				triggerNativeChange();
+				this.triggerNativeChange();
 			}
 
 			if (el.classList.contains('Pickathing-selectedField')) {
@@ -1339,7 +1339,7 @@ class Pickathing {
 				}
 
 				this.onChange(this.value);
-				triggerNativeChange();
+				this.triggerNativeChange();
 			}
 
 		});
