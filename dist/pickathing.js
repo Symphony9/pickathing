@@ -1129,7 +1129,7 @@ Pickathing.prototype.setOptionByIndex = function setOptionByIndex (index, fireOn
 
 	if (typeof fireOnChange == 'undefined' || fireOnChange == true) {
 		this.onChange();
-		triggerNativeChange();
+		this.triggerNativeChange();
 	}
 };
 
@@ -1145,7 +1145,7 @@ Pickathing.prototype.reset = function reset (fireOnChange) {
 
 		if (fireOnChange) {
 			this.onChange();
-			triggerNativeChange();
+			this.triggerNativeChange();
 		}
 	}
 
@@ -1332,7 +1332,7 @@ Pickathing.prototype.bindEvents = function bindEvents () {
 			}
 
 			this$1.onChange(this$1.value);
-			triggerNativeChange();
+			this$1.triggerNativeChange();
 		}
 
 		if (el.classList.contains('Pickathing-selectedField')) {
@@ -1352,7 +1352,7 @@ Pickathing.prototype.bindEvents = function bindEvents () {
 			}
 
 			this$1.onChange(this$1.value);
-			triggerNativeChange();
+			this$1.triggerNativeChange();
 		}
 
 	});
