@@ -1,4 +1,4 @@
-# MOVED TO [https://gitlab.com/vojta.klos/pickathing](GitLab)
+# MOVED TO [GitLab](https://gitlab.com/vojta.klos/pickathing)
 
 # pickathing
 Simple select written in Vanilla JS
